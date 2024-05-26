@@ -129,7 +129,7 @@ tree: *wlr.SceneTree,
 surface_tree: *wlr.SceneTree,
 saved_surface_tree: *wlr.SceneTree,
 /// Order is left, right, top, bottom
-borders: [4]*wlr.SceneRect,
+borders: [12]*wlr.SceneRect,
 popup_tree: *wlr.SceneTree,
 
 /// Bounds on the width/height of the view, set by the toplevel/xwayland_view implementation.
@@ -189,6 +189,8 @@ pub fn create(impl: Impl) error{OutOfMemory}!*View {
     const popup_tree = try server.root.hidden.tree.createSceneTree();
     errdefer popup_tree.node.destroy();
 
+    const color_black: [4]f32 = [_]f32{ 0.0, 0.0, 0.0, 1.0 };
+
     view.* = .{
         .impl = impl,
         .link = undefined,
@@ -196,10 +198,18 @@ pub fn create(impl: Impl) error{OutOfMemory}!*View {
         .surface_tree = try tree.createSceneTree(),
         .saved_surface_tree = try tree.createSceneTree(),
         .borders = .{
+            try tree.createSceneRect(0, 0, &color_black),
+            try tree.createSceneRect(0, 0, &color_black),
+            try tree.createSceneRect(0, 0, &color_black),
+            try tree.createSceneRect(0, 0, &color_black),
             try tree.createSceneRect(0, 0, &server.config.border_color_unfocused),
             try tree.createSceneRect(0, 0, &server.config.border_color_unfocused),
             try tree.createSceneRect(0, 0, &server.config.border_color_unfocused),
             try tree.createSceneRect(0, 0, &server.config.border_color_unfocused),
+            try tree.createSceneRect(0, 0, &color_black),
+            try tree.createSceneRect(0, 0, &color_black),
+            try tree.createSceneRect(0, 0, &color_black),
+            try tree.createSceneRect(0, 0, &color_black),
         },
         .popup_tree = popup_tree,
 
@@ -407,7 +417,7 @@ pub fn updateSceneState(view: *View) void {
 
         // Order is left, right, top, bottom
         // left and right borders include the corners, top and bottom do not.
-        var border_boxes = [4]wlr.Box{
+        var border_boxes = [12]wlr.Box{
             .{
                 .x = -border_width,
                 .y = -border_width,
@@ -432,7 +442,60 @@ pub fn updateSceneState(view: *View) void {
                 .width = box.width,
                 .height = border_width,
             },
+
+            .{
+                .x = -(2 * border_width),
+                .y = -(2 * border_width),
+                .width = border_width,
+                .height = box.height + 4 * border_width,
+            },
+            .{
+                .x = box.width + border_width,
+                .y = -(2 * border_width),
+                .width = border_width,
+                .height = box.height + 4 * border_width,
+            },
+            .{
+                .x = -border_width,
+                .y = -(2 * border_width),
+                .width = box.width + (2 * border_width),
+                .height = border_width,
+            },
+            .{
+                .x = -border_width,
+                .y = box.height + border_width,
+                .width = box.width + (2 * border_width),
+                .height = border_width,
+            },
+
+            .{
+                .x = -(3 * border_width),
+                .y = -(3 * border_width),
+                .width = border_width,
+                .height = box.height + 6 * border_width,
+            },
+            .{
+                .x = box.width + (2 * border_width),
+                .y = -(3 * border_width),
+                .width = border_width,
+                .height = box.height + 6 * border_width,
+            },
+            .{
+                .x = -(2 * border_width),
+                .y = -(3 * border_width),
+                .width = box.width + (4 * border_width),
+                .height = border_width,
+            },
+            .{
+                .x = -(2 * border_width),
+                .y = box.height + (2 * border_width),
+                .width = box.width + (4 * border_width),
+                .height = border_width,
+            },
         };
+
+        const color_black: [4]f32 = [_]f32{ 0.0, 0.0, 0.0, 1.0 };
+        var n: i32 = 1;
 
         for (&view.borders, &border_boxes) |border, *border_box| {
             border_box.x += box.x;
@@ -444,7 +507,16 @@ pub fn updateSceneState(view: *View) void {
             border.node.setEnabled(view.current.ssd and !view.current.fullscreen);
             border.node.setPosition(border_box.x, border_box.y);
             border.setSize(border_box.width, border_box.height);
-            border.setColor(border_color);
+
+            if (n <= 4) {
+                border.setColor(&color_black);
+            } else if (n <= 8) {
+                border.setColor(border_color);
+            } else {
+                border.setColor(&color_black);
+            }
+
+            n += 1;
         }
     }
 }
