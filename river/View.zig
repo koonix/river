@@ -667,6 +667,11 @@ pub fn map(view: *View) !void {
     if (output) |o| {
         view.setPendingOutput(o);
 
+        var focused = server.input_manager.defaultSeat().focused;
+        if (focused == .view) {
+            focused.view.pending.fullscreen = false;
+        }
+
         var it = server.input_manager.seats.first;
         while (it) |seat_node| : (it = seat_node.next) seat_node.data.focus(view);
     } else {
