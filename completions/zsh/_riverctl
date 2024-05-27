@@ -19,7 +19,7 @@ _riverctl_commands()
         'move:Move the focused view in the specified direction'
         'resize:Resize the focused view along the given axis'
         'snap:Snap the focused view to the specified screen edge'
-        'stack-pos:Get or set the position of the focused window in the stack'
+        'stack-pos:Get or set the position of the focused view in the stack'
         'send-to-output:Send the focused view to the next or the previous output'
         'spawn:Run shell_command using /bin/sh -c'
         'swap:Swap the focused view with the next/previous visible non-floating view'
