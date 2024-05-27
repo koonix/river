@@ -68,6 +68,11 @@ necessarily disjunct), an analogy to workspaces.
 	Snap the focused view to the specified screen edge. The view will
 	be set to floating.
 
+*stack-pos* [_position_]
+	Get the position of the currently focused view in the stack.
+	If _position_ is provided,
+	also focus the view in the given position in the stack.
+
 *send-to-output* [*-current-tags*] *next*|*previous*|*up*|*right*|*down*|*left*|_name_
 	Send the focused view to the next or previous output, the closest
 	output in any direction or to an output by name.
