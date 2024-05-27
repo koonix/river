@@ -192,6 +192,9 @@ layout_name: ?[:0]const u8 = null,
 /// affect already floating views.
 layout: ?*Layout = null,
 
+/// Number of views in the main area of the layout
+main_count: u31 = 1,
+
 status: OutputStatus,
 
 destroy: wl.Listener(*wlr.Output) = wl.Listener(*wlr.Output).init(handleDestroy),

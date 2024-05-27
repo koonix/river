@@ -56,6 +56,12 @@ necessarily disjunct), an analogy to workspaces.
 
 	- *-skip-floating*: Skip floating views, only focusing tiled ones.
 
+*main-count* [_count_]
+	Get the number of views in the main area of the layout.
+	If _count_ is provided,
+	also set the number of views in the main area of the layout.
+	Needs to be set correctly for *switch-area* to function.
+
 *move* *up*|*down*|*left*|*right* _delta_
 	Move the focused view in the specified direction by _delta_ logical
 	pixels. The view will be set to floating.
@@ -111,6 +117,10 @@ necessarily disjunct), an analogy to workspaces.
 	with the given _namespace_, if any. What commands a layout generator
 	understands depends on the layout generator. For rivertile, see the
 	documentation in the *rivertile*(1) man page.
+
+*switch-area*
+	Switch between the main and secondary areas of the layout.
+	*main-count* needs to be set correctly for this to function.
 
 ## TAG MANAGEMENT
 

@@ -17,6 +17,7 @@ function __riverctl_completion ()
 			input \
 			list-inputs \
 			list-input-configs \
+			main-count \
 			move \
 			resize \
 			rule-add \
@@ -27,6 +28,7 @@ function __riverctl_completion ()
 			send-to-output \
 			spawn \
 			swap \
+			switch-area \
 			toggle-float \
 			toggle-fullscreen \
 			zoom \
