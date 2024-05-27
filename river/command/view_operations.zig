@@ -80,6 +80,7 @@ pub fn stackPos(
     out: *?[]const u8,
 ) Error!void {
     if (args.len > 2) return Error.TooManyArguments;
+
     const output = seat.focused_output orelse return;
 
     var pos: i32 = 0;
@@ -89,6 +90,7 @@ pub fn stackPos(
     var v: ?*View = null;
 
     var it = output.pending.wm_stack.iterator(.forward);
+
     while (it.next()) |view| {
         if (view.pending.float or output.pending.tags & view.pending.tags == 0) continue;
         if (view == seat.focused.view) {
@@ -103,6 +105,57 @@ pub fn stackPos(
     if (v != null and !seat.focused.view.pending.fullscreen) {
         seat.focus(v);
         server.root.applyPending();
+    }
+}
+
+pub fn mainCount(
+    seat: *Seat,
+    args: []const [:0]const u8,
+    out: *?[]const u8,
+) Error!void {
+    if (args.len > 2) return Error.TooManyArguments;
+
+    const output = seat.focused_output orelse return;
+
+    out.* = try fmt.allocPrint(util.gpa, "{}", .{output.main_count});
+
+    if (args.len == 2) {
+        const arg = try fmt.parseInt(u31, args[1], 10);
+        output.main_count = arg;
+    }
+}
+
+pub fn switchArea(
+    seat: *Seat,
+    _: []const [:0]const u8,
+    _: *?[]const u8,
+) Error!void {
+    const output = seat.focused_output orelse return;
+
+    var i: i32 = 1;
+    var in_main: bool = true;
+
+    var view_in_main = std.AutoHashMap(*View, bool).init(util.gpa);
+    defer view_in_main.deinit();
+
+    var it_w = output.pending.wm_stack.iterator(.forward);
+
+    while (it_w.next()) |view| {
+        if (view.pending.float or output.pending.tags & view.pending.tags == 0) continue;
+        if (view == seat.focused.view and i > output.main_count) in_main = false;
+        view_in_main.put(view, i <= output.main_count) catch unreachable;
+        i += 1;
+    }
+
+    var it_f = output.pending.focus_stack.iterator(.forward);
+
+    while (it_f.next()) |view| {
+        if (view.pending.float or output.pending.tags & view.pending.tags == 0) continue;
+        if (view_in_main.get(view) != in_main) {
+            seat.focus(view);
+            server.root.applyPending();
+            return;
+        }
     }
 }
 
