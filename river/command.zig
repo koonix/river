@@ -85,6 +85,7 @@ const command_impls = std.StaticStringMap(
         .{ "set-repeat",                @import("command/set_repeat.zig").setRepeat },
         .{ "set-view-tags",             @import("command/tags.zig").setViewTags },
         .{ "snap",                      @import("command/move.zig").snap },
+        .{ "stack-pos",                 @import("command/view_operations.zig").stackPos },
         .{ "spawn",                     @import("command/spawn.zig").spawn },
         .{ "spawn-tagmask",             @import("command/tags.zig").spawnTagmask },
         .{ "swap",                      @import("command/view_operations.zig").swap},

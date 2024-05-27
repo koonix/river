@@ -15,11 +15,13 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 const std = @import("std");
+const fmt = std.fmt;
 const assert = std.debug.assert;
 const wlr = @import("wlroots");
 const flags = @import("flags");
 
 const server = &@import("../main.zig").server;
+const util = @import("../util.zig");
 
 const Direction = @import("../command.zig").Direction;
 const Error = @import("../command.zig").Error;
@@ -68,6 +70,38 @@ pub fn swap(
         assert(!target.pending.fullscreen);
         seat.focused.view.pending_wm_stack_link.swapWith(&target.pending_wm_stack_link);
         seat.cursor.may_need_warp = true;
+        server.root.applyPending();
+    }
+}
+
+pub fn stackPos(
+    seat: *Seat,
+    args: []const [:0]const u8,
+    out: *?[]const u8,
+) Error!void {
+    if (args.len > 2) return Error.TooManyArguments;
+    const output = seat.focused_output orelse return;
+
+    var pos: i32 = 0;
+    if (args.len == 2) pos = try fmt.parseInt(u31, args[1], 10);
+
+    var i: i32 = 1;
+    var v: ?*View = null;
+
+    var it = output.pending.wm_stack.iterator(.forward);
+    while (it.next()) |view| {
+        if (view.pending.float or output.pending.tags & view.pending.tags == 0) continue;
+        if (view == seat.focused.view) {
+            out.* = try fmt.allocPrint(util.gpa, "{}", .{i});
+        }
+        if (pos == i) {
+            v = view;
+        }
+        i += 1;
+    }
+
+    if (v != null and !seat.focused.view.pending.fullscreen) {
+        seat.focus(v);
         server.root.applyPending();
     }
 }

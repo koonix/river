@@ -23,6 +23,7 @@ function __riverctl_completion ()
 			rule-del \
 			list-rules \
 			snap \
+			stack-pos \
 			send-to-output \
 			spawn \
 			swap \
