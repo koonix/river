@@ -81,6 +81,7 @@ pub fn stackPos(
 ) Error!void {
     if (args.len > 2) return Error.TooManyArguments;
 
+    if (seat.focused != .view) return;
     const output = seat.focused_output orelse return;
 
     var pos: i32 = 0;
@@ -130,6 +131,7 @@ pub fn switchArea(
     _: []const [:0]const u8,
     _: *?[]const u8,
 ) Error!void {
+    if (seat.focused != .view) return;
     const output = seat.focused_output orelse return;
 
     var i: i32 = 1;
