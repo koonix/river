@@ -669,7 +669,9 @@ pub fn map(view: *View) !void {
 
         var focused = server.input_manager.defaultSeat().focused;
         if (focused == .view) {
-            focused.view.pending.fullscreen = false;
+            if (view.pending.tags & focused.view.pending.tags != 0) {
+                focused.view.pending.fullscreen = false;
+            }
         }
 
         var it = server.input_manager.seats.first;
