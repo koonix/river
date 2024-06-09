@@ -95,6 +95,9 @@ necessarily disjunct), an analogy to workspaces.
 	Swap the focused view with the next or previous non-floating view in the
 	stack or the closest non-floating view in any direction.
 
+*systemd-ready*
+	Inform systemd about service startup completion.
+
 *toggle-float*
 	Toggle the floating state of the focused view.
 

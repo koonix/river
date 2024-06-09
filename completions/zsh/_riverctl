@@ -25,6 +25,7 @@ _riverctl_commands()
         'spawn:Run shell_command using /bin/sh -c'
         'swap:Swap the focused view with the next/previous visible non-floating view'
         'switch-area:Switch between the main and secondary areas of the layout'
+        'systemd-ready:Inform systemd about service startup completion'
         'toggle-float:Toggle the floating state of the focused view'
         'toggle-fullscreen:Toggle the fullscreen state of the focused view'
         'zoom:Bump the focused view to the top of the layout stack'

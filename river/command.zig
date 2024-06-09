@@ -91,6 +91,7 @@ const command_impls = std.StaticStringMap(
         .{ "spawn-tagmask",             @import("command/tags.zig").spawnTagmask },
         .{ "swap",                      @import("command/view_operations.zig").swap},
         .{ "switch-area",               @import("command/view_operations.zig").switchArea },
+        .{ "systemd-ready",             @import("command/systemd_ready.zig").systemdReady },
         .{ "toggle-float",              @import("command/toggle_float.zig").toggleFloat },
         .{ "toggle-focused-tags",       @import("command/tags.zig").toggleFocusedTags },
         .{ "toggle-fullscreen",         @import("command/toggle_fullscreen.zig").toggleFullscreen },

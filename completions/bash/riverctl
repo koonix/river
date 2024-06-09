@@ -29,6 +29,7 @@ function __riverctl_completion ()
 			spawn \
 			swap \
 			switch-area \
+			systemd-ready \
 			toggle-float \
 			toggle-fullscreen \
 			zoom \
