@@ -780,7 +780,14 @@ pub fn hide(cursor: *Cursor) void {
     }
 
     cursor.hidden = true;
-    cursor.setTheme(server.config.cursor_theme_hidden, null, false) catch {};
+
+    const size = server.config.cursor_size;
+    if (server.config.cursor_theme_hidden) |theme| {
+        cursor.setTheme(theme.ptr, size, false) catch {};
+    } else {
+        cursor.setTheme(null, size, false) catch {};
+    }
+
     cursor.hide_cursor_timer.timerUpdate(0) catch {
         log.err("failed to update cursor hide timeout", .{});
     };
@@ -792,7 +799,14 @@ pub fn unhide(cursor: *Cursor) void {
     };
     if (!cursor.hidden) return;
     cursor.hidden = false;
-    cursor.setTheme(server.config.cursor_theme, null, false) catch {};
+
+    const size = server.config.cursor_size;
+    if (server.config.cursor_theme) |theme| {
+        cursor.setTheme(theme.ptr, size, false) catch {};
+    } else {
+        cursor.setTheme(null, size, false) catch {};
+    }
+
     cursor.updateState();
 }
 
