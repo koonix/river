@@ -415,11 +415,12 @@ matches everything while _\*\*_ and the empty string are invalid.
 	Set the keyboard repeat rate to _rate_ key repeats per second and
 	repeat delay to _delay_ milliseconds.
 
-*xcursor-theme* _theme_name_ [_size_]
+*xcursor-theme* _theme_name_ _hidden_theme_name_ [_size_]
 	Set the xcursor theme to _theme_name_ and optionally set the _size_.
 	The theme of the default seat determines the default for Xwayland
 	and is made available through the _XCURSOR_THEME_ and _XCURSOR_SIZE_
 	environment variables.
+	When the cursor is hidden, _hidden_theme_name_ will be effective.
 
 ## INPUT CONFIGURATION
 
