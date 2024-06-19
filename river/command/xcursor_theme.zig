@@ -36,9 +36,9 @@ pub fn xcursorTheme(
     server.config.cursor_theme = if (name.len == 0) null else name;
     server.config.cursor_theme_hidden = if (name_hidden.len == 0) null else name_hidden;
 
-    try seat.cursor.setTheme(name, size);
+    try seat.cursor.setTheme(name, size, true);
 
     if (seat.cursor.hidden) {
-        try seat.cursor.setTheme(name_hidden, size, true);
+        try seat.cursor.setTheme(name_hidden, size, false);
     }
 }
