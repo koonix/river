@@ -129,6 +129,10 @@ cursor_hide_timeout: u31 = 0,
 /// Hide the cursor while typing
 cursor_hide_when_typing: HideCursorWhenTypingMode = .disabled,
 
+/// Cursor theme names
+cursor_theme: ?[*:0]const u8 = null,
+cursor_theme_hidden: ?[*:0]const u8 = null,
+
 xkb_context: *xkb.Context,
 /// The xkb keymap used for all keyboards
 keymap: *xkb.Keymap,

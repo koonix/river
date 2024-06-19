@@ -16,6 +16,8 @@
 
 const std = @import("std");
 
+const server = &@import("../main.zig").server;
+
 const Error = @import("../command.zig").Error;
 const Seat = @import("../Seat.zig");
 
@@ -24,11 +26,19 @@ pub fn xcursorTheme(
     args: []const [:0]const u8,
     _: *?[]const u8,
 ) Error!void {
-    if (args.len < 2) return Error.NotEnoughArguments;
-    if (args.len > 3) return Error.TooManyArguments;
+    if (args.len < 3) return Error.NotEnoughArguments;
+    if (args.len > 4) return Error.TooManyArguments;
 
     const name = args[1];
-    const size = if (args.len == 3) try std.fmt.parseInt(u32, args[2], 10) else null;
+    const name_hidden = args[2];
+    const size = if (args.len == 4) try std.fmt.parseInt(u32, args[3], 10) else null;
+
+    server.config.cursor_theme = if (name.len == 0) null else name;
+    server.config.cursor_theme_hidden = if (name_hidden.len == 0) null else name_hidden;
 
     try seat.cursor.setTheme(name, size);
+
+    if (seat.cursor.hidden) {
+        try seat.cursor.setTheme(name_hidden, size, true);
+    }
 }
