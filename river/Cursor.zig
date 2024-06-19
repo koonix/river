@@ -210,7 +210,7 @@ pub fn init(cursor: *Cursor, seat: *Seat) !void {
     };
     errdefer cursor.hide_cursor_timer.remove();
     try cursor.hide_cursor_timer.timerUpdate(server.config.cursor_hide_timeout);
-    try cursor.setTheme(null, null);
+    try cursor.setTheme(null, null, true);
 
     // wlr_cursor *only* displays an image on screen. It does not move around
     // when the pointer moves. However, we can attach input devices to it, and
@@ -251,7 +251,7 @@ pub fn deinit(cursor: *Cursor) void {
 /// Set the cursor theme for the given seat, as well as the xwayland theme if
 /// this is the default seat. Either argument may be null, in which case a
 /// default will be used.
-pub fn setTheme(cursor: *Cursor, theme: ?[*:0]const u8, _size: ?u32, no_env: ?bool) !void {
+pub fn setTheme(cursor: *Cursor, theme: ?[*:0]const u8, _size: ?u32, setenv: bool) !void {
     const size = _size orelse default_size;
 
     const xcursor_manager = try wlr.XcursorManager.create(theme, size);
@@ -260,7 +260,7 @@ pub fn setTheme(cursor: *Cursor, theme: ?[*:0]const u8, _size: ?u32, no_env: ?bo
     // If this cursor belongs to the default seat, set the xcursor environment
     // variables as well as the xwayland cursor theme.
     if (cursor.seat == server.input_manager.defaultSeat()) {
-        if (no_env != true) {
+        if (setenv) {
             const size_str = try std.fmt.allocPrintZ(util.gpa, "{}", .{size});
             defer util.gpa.free(size_str);
             if (c.setenv("XCURSOR_SIZE", size_str.ptr, 1) < 0) return error.OutOfMemory;
@@ -780,7 +780,7 @@ pub fn hide(cursor: *Cursor) void {
     }
 
     cursor.hidden = true;
-    cursor.setTheme(server.config.cursor_theme_hidden, null, true);
+    cursor.setTheme(server.config.cursor_theme_hidden, null, false);
     cursor.hide_cursor_timer.timerUpdate(0) catch {
         log.err("failed to update cursor hide timeout", .{});
     };
@@ -792,7 +792,7 @@ pub fn unhide(cursor: *Cursor) void {
     };
     if (!cursor.hidden) return;
     cursor.hidden = false;
-    cursor.setTheme(server.config.cursor_theme, null, true);
+    cursor.setTheme(server.config.cursor_theme, null, false);
     cursor.updateState();
 }
 
