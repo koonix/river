@@ -130,8 +130,11 @@ cursor_hide_timeout: u31 = 0,
 cursor_hide_when_typing: HideCursorWhenTypingMode = .disabled,
 
 /// Cursor theme names
-cursor_theme: ?[*:0]const u8 = null,
-cursor_theme_hidden: ?[*:0]const u8 = null,
+cursor_theme: ?[:0]const u8 = null,
+cursor_theme_hidden: ?[:0]const u8 = null,
+
+/// Cursor size
+cursor_size: ?u32 = null,
 
 xkb_context: *xkb.Context,
 /// The xkb keymap used for all keyboards

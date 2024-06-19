@@ -17,9 +17,12 @@
 const std = @import("std");
 
 const server = &@import("../main.zig").server;
+const util = @import("../util.zig");
 
 const Error = @import("../command.zig").Error;
 const Seat = @import("../Seat.zig");
+
+const log = std.log.scoped(.xcursor_theme);
 
 pub fn xcursorTheme(
     seat: *Seat,
@@ -31,14 +34,29 @@ pub fn xcursorTheme(
 
     const name = args[1];
     const name_hidden = args[2];
-    const size = if (args.len == 4) try std.fmt.parseInt(u32, args[3], 10) else null;
+    server.config.cursor_size = if (args.len == 4) try std.fmt.parseInt(u32, args[3], 10) else null;
 
-    server.config.cursor_theme = if (name.len == 0) null else name;
-    server.config.cursor_theme_hidden = if (name_hidden.len == 0) null else name_hidden;
+    if (name.len > 0) {
+        if (server.config.cursor_theme) |theme| {
+            util.gpa.free(theme);
+        }
+        server.config.cursor_theme = try util.gpa.dupeZ(u8, name);
+    } else {
+        server.config.cursor_theme = null;
+    }
 
-    try seat.cursor.setTheme(name, size, true);
+    if (name_hidden.len > 0) {
+        if (server.config.cursor_theme_hidden) |theme| {
+            util.gpa.free(theme);
+        }
+        server.config.cursor_theme_hidden = try util.gpa.dupeZ(u8, name_hidden);
+    } else {
+        server.config.cursor_theme_hidden = null;
+    }
 
     if (seat.cursor.hidden) {
-        try seat.cursor.setTheme(name_hidden, size, false);
+        seat.cursor.hide();
+    } else {
+        seat.cursor.unhide();
     }
 }
