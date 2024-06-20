@@ -781,11 +781,10 @@ pub fn hide(cursor: *Cursor) void {
 
     cursor.hidden = true;
 
-    const size = server.config.cursor_size;
     if (server.config.cursor_theme_hidden) |theme| {
-        cursor.setTheme(theme.ptr, size, false) catch {};
+        cursor.setTheme(theme.ptr, server.config.cursor_size, false) catch {};
     } else {
-        cursor.setTheme(null, size, false) catch {};
+        cursor.setTheme(null, server.config.cursor_size, false) catch {};
     }
 
     cursor.hide_cursor_timer.timerUpdate(0) catch {
@@ -800,11 +799,10 @@ pub fn unhide(cursor: *Cursor) void {
     if (!cursor.hidden) return;
     cursor.hidden = false;
 
-    const size = server.config.cursor_size;
     if (server.config.cursor_theme) |theme| {
-        cursor.setTheme(theme.ptr, size, false) catch {};
+        cursor.setTheme(theme.ptr, server.config.cursor_size, false) catch {};
     } else {
-        cursor.setTheme(null, size, false) catch {};
+        cursor.setTheme(null, server.config.cursor_size, false) catch {};
     }
 
     cursor.updateState();

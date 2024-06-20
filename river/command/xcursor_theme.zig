@@ -54,9 +54,13 @@ pub fn xcursorTheme(
         server.config.cursor_theme_hidden = null;
     }
 
+    if (server.config.cursor_theme) |theme| {
+        seat.cursor.setTheme(theme.ptr, server.config.cursor_size, true) catch {};
+    } else {
+        seat.cursor.setTheme(null, server.config.cursor_size, true) catch {};
+    }
+
     if (seat.cursor.hidden) {
         seat.cursor.hide();
-    } else {
-        seat.cursor.unhide();
     }
 }
